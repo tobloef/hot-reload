@@ -1,5 +1,5 @@
 {
-  "name": "@tobloef/hot",
+  "name": "@tobloef/hot-reload",
   "description": "Hot-reloading utilities",
   "version": "1.0.0",
   "main": "src/index.js",
