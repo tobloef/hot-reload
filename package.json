@@ -2,16 +2,19 @@
   "name": "@tobloef/hot",
   "description": "Hot-reloading utilities",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {},
+  "main": "src/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tobloef/hot-reload.git"
   },
   "author": "Tobias Løfgren <tobloef@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tobloef/hot-reload/issues"
-  },
-  "homepage": "https://github.com/tobloef/hot-reload#readme"
+  "type": "module",
+  "types": "types/index.d.ts",
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
 }
