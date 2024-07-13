@@ -1,0 +1,17 @@
+{
+  "name": "@tobloef/hot",
+  "description": "Hot-reloading utilities",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobloef/hot-reload.git"
+  },
+  "author": "Tobias Løfgren <tobloef@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tobloef/hot-reload/issues"
+  },
+  "homepage": "https://github.com/tobloef/hot-reload#readme"
+}
