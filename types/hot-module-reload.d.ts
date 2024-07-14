@@ -1,4 +1,4 @@
-/** @import { HotReloadCallback } from "./hot-reload.js"; */
+/** @import { HotReloadCallback } from "./hot-reload-store.js"; */
 /** @typedef {Object} Module */
 /** @typedef {{ [key: string]: string }} Attributes */
 /** @typedef {(newModule: Module) => Promise<void>} HotModuleReloadCallback */
@@ -6,13 +6,11 @@ export class HotModuleReload {
     /**
      * @param {string} importUrl
      * @param {Object} [options]
-     * @param {boolean} [options.fullReloadFallback]
      * @param {boolean} [options.logging]
      * @param {"every" | "some"} [options.acceptMode]
      * @param {boolean} [options.cache]
      */
     constructor(importUrl: string, options?: {
-        fullReloadFallback?: boolean | undefined;
         logging?: boolean | undefined;
         acceptMode?: "every" | "some" | undefined;
         cache?: boolean | undefined;

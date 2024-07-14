@@ -1,24 +1,21 @@
-/** @typedef {(meta: Record<string, unknown>) => Promise<void>} HotReloadCallback */
+/** @import { HotReloadStore, HotReloadCallback } from "./hot-reload-store.js"; */
 export class HotReload {
     /**
      * @param {string} importUrl
      * @param {Object} [options]
-     * @param {boolean} [options.fullReloadFallback]
      * @param {boolean} [options.logging]
-     * @param {"every" | "some"} [options.acceptMode]
+     * @param {HotReloadStore} [options.store]
      */
     constructor(importUrl: string, options?: {
-        fullReloadFallback?: boolean | undefined;
         logging?: boolean | undefined;
-        acceptMode?: "every" | "some" | undefined;
+        store?: HotReloadStore | undefined;
     } | undefined);
-    /** @type {boolean} */
-    fullReloadFallback: boolean;
+    /** @type {string} */
+    importUrl: string;
     /** @type {boolean} */
     logging: boolean;
-    /** @type {"every" | "some"} */
-    acceptMode: "every" | "some";
-    importUrl: string;
+    /** @type {HotReloadStore} */
+    store: HotReloadStore;
     /**
      * @param {string} url
      * @param {HotReloadCallback} callback
@@ -40,6 +37,6 @@ export class HotReload {
      * @returns {string}
      */
     getCanonicalUrl(url: string): string;
-    #private;
 }
-export type HotReloadCallback = (meta: Record<string, unknown>) => Promise<void>;
+import type { HotReloadStore } from "./hot-reload-store.js";
+import type { HotReloadCallback } from "./hot-reload-store.js";
