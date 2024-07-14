@@ -1,6 +1,6 @@
 import { HotReload } from "./hot-reload.js";
 
-/** @import { HotReloadCallback } from "./hot-reload.js"; */
+/** @import { HotReloadCallback } from "./hot-reload-store.js"; */
 
 /** @typedef {Object} Module */
 
@@ -23,7 +23,6 @@ export class HotModuleReload {
   /**
    * @param {string} importUrl
    * @param {Object} [options]
-   * @param {boolean} [options.fullReloadFallback]
    * @param {boolean} [options.logging]
    * @param {"every" | "some"} [options.acceptMode]
    * @param {boolean} [options.cache]

@@ -59,7 +59,7 @@ export async function injectHotImports(originalCode, modulePath, rootPath) {
     (lets.length > 0 ? "\n\n" : "") +
     "await (async () => {\n" +
     `\tconst { HotModuleReload } = await import("@tobloef/hot-reload");\n\n` +
-    `\tconst hmr = new HotModuleReload(import.meta.url, { logging: true });\n\n` +
+    `\tconst hmr = new HotModuleReload(import.meta.url);\n\n` +
     `${subscribes.map((s) => `\t${s}`).join("\n")}` +
     (subscribes.length > 0 ? "\n\n" : "") +
     `${Array.from(triggers).map((t) => `\t${t}`).join("\n")}` +

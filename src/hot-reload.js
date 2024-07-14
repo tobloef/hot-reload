@@ -1,41 +1,27 @@
-import {assertExhaustive} from "./utils/assert-exhaustive.js";
+import { defaultStore } from "./hot-reload-store.js";
 
-/** @typedef {(meta: Record<string, unknown>) => Promise<void>} HotReloadCallback */
+/** @import { HotReloadStore, HotReloadCallback } from "./hot-reload-store.js"; */
 
 export class HotReload {
-  /** @type {boolean} */
-  fullReloadFallback = true;
+  /** @type {string} */
+  importUrl;
 
   /** @type {boolean} */
   logging = false;
 
-  /** @type {"every" | "some"} */
-  acceptMode = "every";
-
-  /**
-   * Maps canonical URLs to arrays of callbacks.
-   * @type {Record<
-   *   string,
-   *   Array<{
-   *     callback: HotReloadCallback,
-   *     meta: Record<string, unknown>
-   *   }>
-   * >}
-   */
-  #callbacks = {};
+  /** @type {HotReloadStore} */
+  store;
 
   /**
    * @param {string} importUrl
    * @param {Object} [options]
-   * @param {boolean} [options.fullReloadFallback]
    * @param {boolean} [options.logging]
-   * @param {"every" | "some"} [options.acceptMode]
+   * @param {HotReloadStore} [options.store]
    */
   constructor(importUrl, options) {
     this.importUrl = importUrl;
-    this.fullReloadFallback = options?.fullReloadFallback ?? this.fullReloadFallback;
     this.logging = options?.logging ?? this.logging;
-    this.acceptMode = options?.acceptMode ?? this.acceptMode;
+    this.store = options?.store ?? defaultStore;
   }
 
   /**
@@ -46,14 +32,7 @@ export class HotReload {
   subscribe(url, callback, meta) {
     const canonicalUrl = this.getCanonicalUrl(url);
 
-    if (this.#callbacks[canonicalUrl] === undefined) {
-      this.#callbacks[canonicalUrl] = [];
-    }
-
-    this.#callbacks[canonicalUrl] = [
-      ...this.#callbacks[canonicalUrl],
-      {callback, meta: meta ?? {}},
-    ];
+    this.store.subscribe(canonicalUrl, callback, meta);
 
     if (this.logging) {
       console.debug("Subscribed to hot reload", {
@@ -70,8 +49,7 @@ export class HotReload {
   unsubscribe(url, callback) {
     const canonicalUrl = this.getCanonicalUrl(url);
 
-    this.#callbacks[canonicalUrl] = this.#callbacks[canonicalUrl]
-      ?.filter(({callback: cb}) => cb !== callback);
+    this.store.unsubscribe(canonicalUrl, callback);
 
     if (this.logging) {
       console.debug("Unsubscribed from hot reload", {
@@ -88,39 +66,14 @@ export class HotReload {
   async trigger(url) {
     const canonicalUrl = this.getCanonicalUrl(url);
 
-    const callbacks = this.#callbacks[canonicalUrl];
-
-    if (callbacks === undefined) {
-      return false;
-    }
-
-    const promises = callbacks.map(async ({callback, meta}) => callback(meta));
-
-    const results = await Promise.all(promises);
-
-    let wasAccepted = false;
-    switch (this.acceptMode) {
-      case "every":
-        wasAccepted = results.every((result) => result);
-        break;
-      case "some":
-        wasAccepted = results.some((result) => result);
-        break;
-      default:
-        assertExhaustive(this.acceptMode);
-    }
+    const wasAccepted = this.store.trigger(canonicalUrl);
 
     if (this.logging) {
       console.debug("Triggered hot reload", {
         canonicalUrl,
         relativeUrl: url,
-        callbackCount: callbacks.length,
         accepted: wasAccepted,
       });
-    }
-
-    if (!wasAccepted && this.fullReloadFallback) {
-      this.#fullReload();
     }
 
     return wasAccepted;
@@ -131,14 +84,6 @@ export class HotReload {
    * @returns {string}
    */
   getCanonicalUrl(url) {
-    const canonicalUrl = new URL(url, this.importUrl).href;
-    return canonicalUrl;
-  }
-
-  #fullReload() {
-    if (this.logging) {
-      console.debug("Doing full reload.");
-    }
-    window.location.reload();
+    return new URL(url, this.importUrl).href;
   }
 }
