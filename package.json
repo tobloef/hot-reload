@@ -4,7 +4,8 @@
   "version": "1.0.1",
   "main": "src/index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.json"
+    "build": "tsc --project tsconfig.json",
+    "test": "node --test"
   },
   "repository": {
     "type": "git",

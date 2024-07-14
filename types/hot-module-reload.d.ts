@@ -1,8 +1,8 @@
 /** @import { HotReloadCallback } from "./hot-reload.js"; */
 /** @typedef {Object} Module */
 /** @typedef {{ [key: string]: string }} Attributes */
-/** @typedef {(meta: { attributes: Attributes }) => Promise<void>} HotModuleReloadCallback */
-export class HotModuleReload extends HotReload {
+/** @typedef {(newModule: Module) => Promise<void>} HotModuleReloadCallback */
+export class HotModuleReload {
     /**
      * @param {string} importUrl
      * @param {Object} [options]
@@ -22,25 +22,26 @@ export class HotModuleReload extends HotReload {
     /**
      * @overload
      * @param {string} relativePath
-     * @param {HotModuleReloadCallback} callback1
+     * @param {HotModuleReloadCallback} callback
      * @return {void}
      */
-    subscribe(relativePath: string, callback1: HotModuleReloadCallback): void;
+    subscribe(relativePath: string, callback: HotModuleReloadCallback): void;
     /**
      * @overload
      * @param {string} relativePath
      * @param {Object} attributes
-     * @param {HotModuleReloadCallback} callback2
+     * @param {HotModuleReloadCallback} callback
      * @return {void}
      */
-    subscribe(relativePath: string, attributes: Object, callback2: HotModuleReloadCallback): void;
+    subscribe(relativePath: string, attributes: Object, callback: HotModuleReloadCallback): void;
+    /**
+     * @param {string} relativePath
+     */
+    trigger(relativePath: string): Promise<boolean>;
     #private;
 }
 export type Module = Object;
 export type Attributes = {
     [key: string]: string;
 };
-export type HotModuleReloadCallback = (meta: {
-    attributes: Attributes;
-}) => Promise<void>;
-import { HotReload } from "./hot-reload.js";
+export type HotModuleReloadCallback = (newModule: Module) => Promise<void>;
