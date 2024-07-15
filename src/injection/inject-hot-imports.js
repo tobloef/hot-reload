@@ -1,5 +1,5 @@
 import { commentOutImports, parseImports, getImportPathInfo } from "./imports.js";
-import { join } from "./utils/paths.js";
+import { join } from "../utils/paths.js";
 
 /**
  * @param {string} originalCode
@@ -14,7 +14,7 @@ export async function injectHotImports(originalCode, modulePath, rootPath) {
 
   let lets = [];
   let subscribes = [];
-  let triggers = new Set();
+  let initialAssigns = new Set();
 
   for (const importInfo of imports) {
     const {
@@ -26,7 +26,6 @@ export async function injectHotImports(originalCode, modulePath, rootPath) {
 
     const {
       isBare,
-      canonicalPath,
     } = parseImportPath(importPath, modulePath, rootPath);
 
     if (isBare) {
@@ -34,17 +33,23 @@ export async function injectHotImports(originalCode, modulePath, rootPath) {
     }
 
     lets.push(`let ${importName};`);
-    triggers.add(`await hmr.trigger("${importPath}");`);
 
     const attributesStr = attributes ? `, ${attributes}` : "";
 
     let assign = `${importName} = newModule`;
-    if (exportName !== "*") {
-      assign += `["${exportName}"]`;
-    }
+    let property = exportName !== "*" ? `["${exportName}"]` : "";
+    assign += property;
     assign += ";";
 
-    const subscribe = `hmr.subscribe("${importPath}"${attributesStr}, (newModule) => { ${assign} return true; });`;
+    initialAssigns.add(`${importName} = (await hmr.getModule("${importPath}"))${property};`);
+
+    const subscribe = (
+      `hmr.onReload("${importPath}"${attributesStr}, (newModule) => {\n` +
+      `\t${assign}\n` +
+      `\tconsole.log("Ran:", ${JSON.stringify(assign)})\n` +
+      `\treturn true;\n` +
+      `});`
+    );
     subscribes.push(subscribe);
   }
 
@@ -62,8 +67,8 @@ export async function injectHotImports(originalCode, modulePath, rootPath) {
     `\tconst hmr = new HotModuleReload(import.meta.url);\n\n` +
     `${subscribes.map((s) => `\t${s}`).join("\n")}` +
     (subscribes.length > 0 ? "\n\n" : "") +
-    `${Array.from(triggers).map((t) => `\t${t}`).join("\n")}` +
-    (triggers.size > 0 ? "\n" : "") +
+    `${Array.from(initialAssigns).map((t) => `\t${t}`).join("\n")}` +
+    (initialAssigns.size > 0 ? "\n" : "") +
     "})();"
   );
 
