@@ -1,12 +1,11 @@
 {
   "name": "@tobloef/hot-reload",
   "description": "Hot-reloading utilities",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "src/index.js",
   "scripts": {
     "generate-types": "rm -rf ./types && tsc --emitDeclarationOnly --project tsconfig.json",
     "prepublish": "npm run generate-types",
-    "publish": "npm publish",
     "test": "node --test",
     "check": "tsc --noEmit --project tsconfig.json"
   },
