@@ -44,8 +44,6 @@ export class HotReload {
    * @returns {Unsubscribe}
    */
   onPreReload(url, callback) {
-    console.log(this.constructor.name, this.onPreReload.name, url);
-
     const canonicalUrl = this.getCanonicalUrl(url);
 
     this.#preReloadCallbackStore.subscribe(canonicalUrl, callback);
@@ -61,8 +59,6 @@ export class HotReload {
    * @returns {Unsubscribe}
    */
   onReload(url, callback) {
-    console.log(this.constructor.name, this.onReload.name, url);
-
     const canonicalUrl = this.getCanonicalUrl(url);
 
     this.#reloadCallbackStore.subscribe(canonicalUrl, callback);
@@ -78,8 +74,6 @@ export class HotReload {
    * @returns {Unsubscribe}
    */
   onPostReload(url, callback) {
-    console.log(this.constructor.name, this.onPostReload.name, url);
-
     const canonicalUrl = this.getCanonicalUrl(url);
 
     this.#postReloadCallbackStore.subscribe(canonicalUrl, callback);
@@ -94,8 +88,6 @@ export class HotReload {
    * @returns {Promise<boolean>} Whether the hot reload was accepted by any of the reload callbacks.
    */
   async reload(url) {
-    console.log(this.constructor.name, this.reload.name, url);
-
     const canonicalUrl = this.getCanonicalUrl(url);
 
     await this.#preReloadCallbackStore.trigger(canonicalUrl);

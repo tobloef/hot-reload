@@ -49,8 +49,6 @@ export class HotModuleReload {
    * @return {void}
    */
   onReload(relativePath, attributesOrCallback, callbackOrUndefined) {
-    console.log(this.constructor.name, this.onReload.name, relativePath);
-
     const canonicalPath =  this.#hotReload.getCanonicalUrl(relativePath);
 
     const attributes = typeof attributesOrCallback !== "function"
@@ -81,8 +79,6 @@ export class HotModuleReload {
    * @param {string} relativePath
    */
   async reload(relativePath) {
-    console.log(this.constructor.name, this.reload.name, relativePath);
-
     return this.#hotReload.reload(relativePath);
   }
 
@@ -90,8 +86,6 @@ export class HotModuleReload {
    * @param {string} relativePath
    */
   async getModule(relativePath) {
-    console.log(this.constructor.name, this.getModule.name, relativePath);
-
     const canonicalPath = this.#hotReload.getCanonicalUrl(relativePath);
 
     return this.#importModule(canonicalPath);
@@ -103,11 +97,7 @@ export class HotModuleReload {
    * @return {Promise<Module>}
    */
   async #importModule(canonicalPath, attributes) {
-    console.log(this.constructor.name, this.#importModule.name, canonicalPath, attributes);
-
     const cachedModule = this.#moduleCache.get(canonicalPath);
-
-    console.log(`Cache ${cachedModule ? "hit" : "miss"} for ${canonicalPath}`);
 
     if (cachedModule) {
       return cachedModule;

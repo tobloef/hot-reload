@@ -12,8 +12,6 @@ export class CallbackStore {
    * @param {Callback} callback
    */
   subscribe(canonicalUrl, callback) {
-    console.log(this.constructor.name, this.subscribe.name, canonicalUrl);
-
     if (this.#callbacks[canonicalUrl] === undefined) {
       this.#callbacks[canonicalUrl] = [];
     }
@@ -29,8 +27,6 @@ export class CallbackStore {
    * @param {Callback} callback
    */
   unsubscribe(canonicalUrl, callback) {
-    console.log(this.constructor.name, this.unsubscribe.name, canonicalUrl);
-
     this.#callbacks[canonicalUrl] = this.#callbacks[canonicalUrl]?.filter((cb) => cb !== callback);
   }
 
@@ -39,8 +35,6 @@ export class CallbackStore {
    * @returns {Promise<boolean>} Whether the hot reload was accepted by any of the callbacks.
    */
   async trigger(canonicalUrl) {
-    console.log(this.constructor.name, this.trigger.name, canonicalUrl);
-
     const callbacks = this.#callbacks[canonicalUrl];
 
     if (callbacks === undefined) {

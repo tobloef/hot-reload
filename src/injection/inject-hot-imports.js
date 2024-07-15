@@ -46,7 +46,6 @@ export async function injectHotImports(originalCode, modulePath, rootPath) {
     const subscribe = (
       `hmr.onReload("${importPath}"${attributesStr}, (newModule) => {\n` +
       `\t${assign}\n` +
-      `\tconsole.log("Ran:", ${JSON.stringify(assign)})\n` +
       `\treturn true;\n` +
       `});`
     );
