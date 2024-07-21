@@ -4,10 +4,14 @@ import { join } from "../utils/paths.js";
 /**
  * @param {string} originalCode
  * @param {string} modulePath
- * @param {string} rootPath
+ * @param {string} [rootPath]
  * @return {Promise<string>}
  */
 export async function injectHotImports(originalCode, modulePath, rootPath) {
+  if (rootPath === undefined) {
+    rootPath = ".";
+  }
+
   const imports = parseImports(originalCode);
 
   let remainingCode = commentOutImports(originalCode);
