@@ -115,7 +115,7 @@ document.querySelector("button").addEventListener("click", () => {
 });
 ```
 
-Source maps are automatically generated as well, to ensure breakpoints stay correct.
+Source maps are automatically generated and injected as well, to ensure breakpoints stay correct.
 
 #### Limitations
 
