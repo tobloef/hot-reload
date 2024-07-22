@@ -1,4 +1,4 @@
-# Hot Reload
+# Hot Reload 🔥
 
 Utilities for hot reloading ([what is hot reloading?](#what-is-hot-reloading)) JavaScript modules and other assets on the web.
 
@@ -114,6 +114,8 @@ document.querySelector("button").addEventListener("click", () => {
   foo();
 });
 ```
+
+Source maps are automatically generated as well, to ensure breakpoints stay correct.
 
 #### Limitations
 
