@@ -4,7 +4,7 @@ const importedName = `(?:\\s+as\\s+(${identifier}))`;
 const exportedName = `(${identifier})`;
 
 const pair = `(${exportedName}${importedName}?)`;
-const oneOrMorePairs = `(?:${pair}(?:,\\s+${pair})*)`;
+const oneOrMorePairs = `(?:${pair}(?:,\\s+${pair},?)*)`;
 
 const namedImports = `(?:\\{\\s*${oneOrMorePairs}?\\s*\\})`;
 const namespaceImport = `(?:(\\*)${importedName}?)`;
@@ -17,7 +17,7 @@ const path = `(?<path>["'][^"']*?["'])`;
 
 const attributes = `(?:with\\s+(?<attributes>\\{(\\s|.)*?\\}))`;
 
-const importStatement = `(^|\\r?\\n)\\s*import\\s+${oneOrMoreImports}\\s+from\\s+${path}(?:\\s+${attributes})?;?`;
+const importStatement = `import\\s+${oneOrMoreImports}\\s+from\\s+${path}(?:\\s+${attributes})?;?`;
 
 export const regexes = {
   pairRegex: new RegExp(pair, "g"),
