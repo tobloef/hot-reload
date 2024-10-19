@@ -19,11 +19,13 @@ const attributes = `(?:with\\s+(?<attributes>\\{(\\s|.)*?\\}))`;
 
 const importStatement = `(^|\\r?\\n)\\s*import\\s+${oneOrMoreImports}\\s+from\\s+${path}(?:\\s+${attributes})?;?`;
 
-const pairRegex = new RegExp(pair, "g");
-const namedImportsRegex = new RegExp(namedImports, "g");
-const namespaceImportRegex = new RegExp(namespaceImport, "g");
-const defaultImportRegex = new RegExp(defaultImport, "g");
-const importRegex = new RegExp(importStatement, "g");
+export const regexes = {
+  pairRegex: new RegExp(pair, "g"),
+  namedImportsRegex: new RegExp(namedImports, "g"),
+  namespaceImportRegex: new RegExp(namespaceImport, "g"),
+  defaultImportRegex: new RegExp(defaultImport, "g"),
+  importRegex: new RegExp(importStatement, "g"),
+};
 
 /**
  * @typedef {Object} ImportInfo
@@ -40,7 +42,7 @@ const importRegex = new RegExp(importStatement, "g");
 export function parseImports(code) {
   let imports = [];
 
-  const { matches } = consumeMatches(code, importRegex);
+  const { matches } = consumeMatches(code, regexes.importRegex);
 
   for (const match of matches) {
     const {
@@ -58,25 +60,25 @@ export function parseImports(code) {
     const {
       matches: namedImportsMatches,
       remaining: remainingAfterNamed,
-    } = consumeMatches(remainingImportString, namedImportsRegex);
+    } = consumeMatches(remainingImportString, regexes.namedImportsRegex);
     remainingImportString = remainingAfterNamed;
 
     const {
       matches: namespaceImportMatches,
       remaining: remainingAfterNamespace,
-    } = consumeMatches(remainingImportString, namespaceImportRegex);
+    } = consumeMatches(remainingImportString, regexes.namespaceImportRegex);
     remainingImportString = remainingAfterNamespace;
 
     const {
       matches: defaultImportMatches,
       remaining: remainingAfterDefault,
-    } = consumeMatches(remainingImportString, defaultImportRegex);
+    } = consumeMatches(remainingImportString, regexes.defaultImportRegex);
     remainingImportString = remainingAfterDefault;
 
     for (const namedImportsMatch of namedImportsMatches) {
       const { matchedText } = namedImportsMatch;
 
-      const { matches: pairMatches } = consumeMatches(matchedText, pairRegex);
+      const { matches: pairMatches } = consumeMatches(matchedText, regexes.pairRegex);
 
       for (const pairMatch of pairMatches) {
         const exportName = pairMatch.unnamedGroups[1];
@@ -124,7 +126,7 @@ export function parseImports(code) {
  * @return string
  */
 export function commentOutImports(code) {
-  const matches = code.matchAll(importRegex);
+  const matches = code.matchAll(regexes.importRegex);
 
   let offset = 0;
   for (const match of matches) {

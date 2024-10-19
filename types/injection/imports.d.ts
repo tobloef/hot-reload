@@ -33,6 +33,13 @@ export function getImportPathInfo(path: string): {
     isRelative: boolean;
     isBare: boolean;
 };
+export namespace regexes {
+    let pairRegex: RegExp;
+    let namedImportsRegex: RegExp;
+    let namespaceImportRegex: RegExp;
+    let defaultImportRegex: RegExp;
+    let importRegex: RegExp;
+}
 export type ImportInfo = {
     path: string;
     exportName: string;
