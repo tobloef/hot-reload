@@ -75,7 +75,7 @@ To make the script `foo.js` support hot-reloading for all its imports, you call 
 ```js
 const originalScript = "...";
 const modulePath = "./foo.js";
-const newScript = await injectHotImports(originalScript, modulePath);
+const newScript = injectHotImports(originalScript, modulePath);
 ```
 
 When injecting, an input script like this:
@@ -105,7 +105,7 @@ await (async () => {
     return true;
   });
 
-  foo = (await hmr.getModule("./bar.js")["foo"];
+  foo = (await hmr.getModule("./bar.js"))["foo"];
 })();
 
 /////////// END OF INJECTED HOT-RELOAD CODE ///////////
