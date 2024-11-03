@@ -8,7 +8,7 @@ describe("injectHotImports", () => {
   it("should correctly inject imports in real-world code", () => {
     const originalCode = inputManagerBeforeInjection;
     const modulePath = "input/input-manager.js";
-    const rootPath = ".";
+    const rootPath = "src";
 
     const expected = inputManagerAfterInjection;
 

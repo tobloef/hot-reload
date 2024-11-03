@@ -39,60 +39,52 @@ export class HotReload {
   }
 
   /**
-   * @param {string} url
+   * @param {string} key
    * @param {Callback} callback
    * @returns {Unsubscribe}
    */
-  onPreReload(url, callback) {
-    const canonicalUrl = this.getCanonicalUrl(url);
-
-    this.#preReloadCallbackStore.subscribe(canonicalUrl, callback);
+  onPreReload(key, callback) {
+    this.#preReloadCallbackStore.subscribe(key, callback);
 
     return () => {
-      this.#preReloadCallbackStore.unsubscribe(canonicalUrl, callback);
+      this.#preReloadCallbackStore.unsubscribe(key, callback);
     };
   }
 
   /**
-   * @param {string} url
+   * @param {string} key
    * @param {Callback} callback
    * @returns {Unsubscribe}
    */
-  onReload(url, callback) {
-    const canonicalUrl = this.getCanonicalUrl(url);
-
-    this.#reloadCallbackStore.subscribe(canonicalUrl, callback);
+  onReload(key, callback) {
+    this.#reloadCallbackStore.subscribe(key, callback);
 
     return () => {
-      this.#reloadCallbackStore.unsubscribe(canonicalUrl, callback);
+      this.#reloadCallbackStore.unsubscribe(key, callback);
     };
   }
 
   /**
-   * @param {string} url
+   * @param {string} key
    * @param {Callback} callback
    * @returns {Unsubscribe}
    */
-  onPostReload(url, callback) {
-    const canonicalUrl = this.getCanonicalUrl(url);
-
-    this.#postReloadCallbackStore.subscribe(canonicalUrl, callback);
+  onPostReload(key, callback) {
+    this.#postReloadCallbackStore.subscribe(key, callback);
 
     return () => {
-      this.#postReloadCallbackStore.unsubscribe(canonicalUrl, callback);
+      this.#postReloadCallbackStore.unsubscribe(key, callback);
     };
   }
 
   /**
-   * @param {string} url
+   * @param {string} key
    * @returns {Promise<boolean>} Whether the hot reload was accepted by any of the reload callbacks.
    */
-  async reload(url) {
-    const canonicalUrl = this.getCanonicalUrl(url);
-
-    await this.#preReloadCallbackStore.trigger(canonicalUrl);
-    const wasAccepted = await this.#reloadCallbackStore.trigger(canonicalUrl);
-    await this.#postReloadCallbackStore.trigger(canonicalUrl);
+  async reload(key) {
+    await this.#preReloadCallbackStore.trigger(key);
+    const wasAccepted = await this.#reloadCallbackStore.trigger(key);
+    await this.#postReloadCallbackStore.trigger(key);
 
     return wasAccepted;
   }
@@ -101,7 +93,7 @@ export class HotReload {
    * @param {string} url
    * @returns {string}
    */
-  getCanonicalUrl(url) {
+  getAbsoluteUrl(url) {
     return new URL(url, this.importUrl).href;
   }
 }

@@ -18,33 +18,33 @@ export class HotReload {
     /** @type {string} */
     importUrl: string;
     /**
-     * @param {string} url
+     * @param {string} key
      * @param {Callback} callback
      * @returns {Unsubscribe}
      */
-    onPreReload(url: string, callback: Callback): Unsubscribe;
+    onPreReload(key: string, callback: Callback): Unsubscribe;
     /**
-     * @param {string} url
+     * @param {string} key
      * @param {Callback} callback
      * @returns {Unsubscribe}
      */
-    onReload(url: string, callback: Callback): Unsubscribe;
+    onReload(key: string, callback: Callback): Unsubscribe;
     /**
-     * @param {string} url
+     * @param {string} key
      * @param {Callback} callback
      * @returns {Unsubscribe}
      */
-    onPostReload(url: string, callback: Callback): Unsubscribe;
+    onPostReload(key: string, callback: Callback): Unsubscribe;
     /**
-     * @param {string} url
+     * @param {string} key
      * @returns {Promise<boolean>} Whether the hot reload was accepted by any of the reload callbacks.
      */
-    reload(url: string): Promise<boolean>;
+    reload(key: string): Promise<boolean>;
     /**
      * @param {string} url
      * @returns {string}
      */
-    getCanonicalUrl(url: string): string;
+    getAbsoluteUrl(url: string): string;
     #private;
 }
 export type Unsubscribe = () => void;

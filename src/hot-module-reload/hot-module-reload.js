@@ -30,6 +30,7 @@ export class HotModuleReload {
   /**
    * @overload
    * @param {string} relativePath
+   * @param {string} canonicalPath
    * @param {HotModuleReloadCallback} callback
    * @return {void}
    */
@@ -37,6 +38,7 @@ export class HotModuleReload {
   /**
    * @overload
    * @param {string} relativePath
+   * @param {string} canonicalPath
    * @param {Attributes} attributes
    * @param {HotModuleReloadCallback} callback
    * @return {void}
@@ -44,12 +46,13 @@ export class HotModuleReload {
 
   /**
    * @param {string} relativePath
+   * @param {string} canonicalPath
    * @param {HotModuleReloadCallback | Attributes} attributesOrCallback
    * @param {HotModuleReloadCallback} [callbackOrUndefined]
    * @return {void}
    */
-  onReload(relativePath, attributesOrCallback, callbackOrUndefined) {
-    const canonicalPath =  this.#hotReload.getCanonicalUrl(relativePath);
+  onReload(relativePath, canonicalPath, attributesOrCallback, callbackOrUndefined) {
+    const absoluteUrl = this.#hotReload.getAbsoluteUrl(relativePath);
 
     const attributes = typeof attributesOrCallback !== "function"
       ? attributesOrCallback
@@ -62,42 +65,42 @@ export class HotModuleReload {
     /** @type {Callback} */
     const wrappedCallback = async () => {
       /** @type {any} */
-      const newModule = await this.#importModule(canonicalPath, attributes);
+      const newModule = await this.#importModule(absoluteUrl, attributes);
 
       return callback?.(newModule);
     };
 
     const bustCache = async () => {
-      this.#moduleCache.remove(canonicalPath);
+      this.#moduleCache.remove(absoluteUrl);
     }
 
     this.#hotReload.onPreReload(canonicalPath, bustCache);
-    this.#hotReload.onReload(relativePath, wrappedCallback);
+    this.#hotReload.onReload(canonicalPath, wrappedCallback);
   }
 
   /**
-   * @param {string} relativePath
+   * @param {string} canonicalPath
    */
-  async reload(relativePath) {
-    return this.#hotReload.reload(relativePath);
+  async reload(canonicalPath) {
+    return this.#hotReload.reload(canonicalPath);
   }
 
   /**
    * @param {string} relativePath
    */
   async getModule(relativePath) {
-    const canonicalPath = this.#hotReload.getCanonicalUrl(relativePath);
+    const absoluteUrl = this.#hotReload.getAbsoluteUrl(relativePath);
 
-    return this.#importModule(canonicalPath);
+    return this.#importModule(absoluteUrl);
   }
 
   /**
-   * @param {string} canonicalPath
+   * @param {string} absoluteUrl
    * @param {Attributes} [attributes]
    * @return {Promise<Module>}
    */
-  async #importModule(canonicalPath, attributes) {
-    const cachedModule = this.#moduleCache.get(canonicalPath);
+  async #importModule(absoluteUrl, attributes) {
+    const cachedModule = this.#moduleCache.get(absoluteUrl);
 
     if (cachedModule) {
       return cachedModule;
@@ -106,14 +109,14 @@ export class HotModuleReload {
     const importPromise = new Promise(async (resolve) => {
       const cacheBuster = `?noCache=${Date.now()}`;
       const newModule = await import(
-        `${canonicalPath}${cacheBuster}`,
+        `${absoluteUrl}${cacheBuster}`,
         attributes ? {with: attributes} : undefined,
         );
       resolve(newModule);
     });
 
 
-    this.#moduleCache.set(canonicalPath, importPromise);
+    this.#moduleCache.set(absoluteUrl, importPromise);
 
     return importPromise;
   }

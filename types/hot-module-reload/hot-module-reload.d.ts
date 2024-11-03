@@ -12,22 +12,24 @@ export class HotModuleReload {
     /**
      * @overload
      * @param {string} relativePath
+     * @param {string} canonicalPath
      * @param {HotModuleReloadCallback} callback
      * @return {void}
      */
-    onReload(relativePath: string, callback: HotModuleReloadCallback): void;
+    onReload(relativePath: string, canonicalPath: string, callback: HotModuleReloadCallback): void;
     /**
      * @overload
      * @param {string} relativePath
+     * @param {string} canonicalPath
      * @param {Attributes} attributes
      * @param {HotModuleReloadCallback} callback
      * @return {void}
      */
-    onReload(relativePath: string, attributes: Attributes, callback: HotModuleReloadCallback): void;
+    onReload(relativePath: string, canonicalPath: string, attributes: Attributes, callback: HotModuleReloadCallback): void;
     /**
-     * @param {string} relativePath
+     * @param {string} canonicalPath
      */
-    reload(relativePath: string): Promise<boolean>;
+    reload(canonicalPath: string): Promise<boolean>;
     /**
      * @param {string} relativePath
      */

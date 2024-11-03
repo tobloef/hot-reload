@@ -2,40 +2,40 @@
 
 export class CallbackStore {
   /**
-   * Maps canonical URLs to arrays of callbacks.
+   * Maps keys to arrays of callbacks.
    * @type {Record<string, Callback[]>}
    */
   #callbacks = {};
 
   /**
-   * @param {string} canonicalUrl
+   * @param {string} key
    * @param {Callback} callback
    */
-  subscribe(canonicalUrl, callback) {
-    if (this.#callbacks[canonicalUrl] === undefined) {
-      this.#callbacks[canonicalUrl] = [];
+  subscribe(key, callback) {
+    if (this.#callbacks[key] === undefined) {
+      this.#callbacks[key] = [];
     }
 
-    this.#callbacks[canonicalUrl] = [
-      ...this.#callbacks[canonicalUrl],
+    this.#callbacks[key] = [
+      ...this.#callbacks[key],
       callback,
     ];
   }
 
   /**
-   * @param {string} canonicalUrl
+   * @param {string} key
    * @param {Callback} callback
    */
-  unsubscribe(canonicalUrl, callback) {
-    this.#callbacks[canonicalUrl] = this.#callbacks[canonicalUrl]?.filter((cb) => cb !== callback);
+  unsubscribe(key, callback) {
+    this.#callbacks[key] = this.#callbacks[key]?.filter((cb) => cb !== callback);
   }
 
   /**
-   * @param {string} canonicalUrl
+   * @param {string} key
    * @returns {Promise<boolean>} Whether the hot reload was accepted by any of the callbacks.
    */
-  async trigger(canonicalUrl) {
-    const callbacks = this.#callbacks[canonicalUrl];
+  async trigger(key) {
+    const callbacks = this.#callbacks[key];
 
     if (callbacks === undefined) {
       return false;

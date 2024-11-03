@@ -30,6 +30,7 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
 
     const {
       isBare,
+      canonicalPath,
     } = parseImportPath(importPath, modulePath, rootPath);
 
     if (isBare) {
@@ -48,7 +49,7 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
     initialAssigns.add(`${importName} = (await hmr.getModule("${importPath}"))${property};`);
 
     const subscribe = (
-      `hmr.onReload("${importPath}"${attributesStr}, (newModule) => {\n` +
+      `hmr.onReload("${importPath}", "${canonicalPath}"${attributesStr}, (newModule) => {\n` +
       `\t${assign}\n` +
       `\treturn true;\n` +
       `});`
@@ -111,14 +112,7 @@ function parseImportPath(importPath, parentPath, rootPath) {
 
   const parentDir = join(parentPath, "..");
 
-  let canonicalPath = join(parentDir, importPath);
-
-  if (canonicalPath.startsWith(rootPath) && rootPath !== ".") {
-    canonicalPath = canonicalPath.slice(rootPath.length);
-    if (!canonicalPath.startsWith("./")) {
-      canonicalPath = `./${canonicalPath}`;
-    }
-  }
+  const canonicalPath = join(rootPath, parentDir, importPath);
 
   return {
     isBare,
