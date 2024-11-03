@@ -17,7 +17,7 @@ const path = `(?<path>["'][^"']*?["'])`;
 
 const attributes = `(?:with\\s+(?<attributes>\\{(\\s|.)*?\\}))`;
 
-const importStatement = `import\\s+${oneOrMoreImports}\\s+from\\s+${path}(?:\\s+${attributes})?;?`;
+const importStatement = `(?:^|\\n)import\\s+${oneOrMoreImports}\\s+from\\s+${path}(?:\\s+${attributes})?;?`;
 
 const pairRegex = new RegExp(pair, "g");
 const namedImportsRegex = new RegExp(namedImports, "g");
@@ -129,8 +129,12 @@ export function commentOutImports(code) {
   let offset = 0;
   for (const match of matches) {
     const { index, groups } = match;
-    const start = index + offset;
-    const end = start + match[0].length;
+    let start = index + offset;
+    let end = start + match[0].length;
+
+    if (code[start] === "\n") {
+      start += 1;
+    }
 
     const importPath = groups?.path.slice(1, -1);
 
@@ -140,10 +144,12 @@ export function commentOutImports(code) {
 
     const { isBare } = getImportPathInfo(importPath);
 
-    if (!isBare) {
-      code = code.slice(0, start) + "/*" + code.slice(start, end) + "*/" + code.slice(end);
-      offset += 4;
+    if (isBare) {
+      continue;
     }
+
+    code = code.slice(0, start) + "/*" + code.slice(start, end) + "*/" + code.slice(end);
+    offset += 4;
   }
 
   return code;

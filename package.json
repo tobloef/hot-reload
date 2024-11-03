@@ -1,7 +1,7 @@
 {
   "name": "@tobloef/hot-reload",
   "description": "Hot-reloading utilities",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "main": "src/index.js",
   "scripts": {
     "generate-types": "rm -rf ./types && tsc --emitDeclarationOnly --project tsconfig.json",

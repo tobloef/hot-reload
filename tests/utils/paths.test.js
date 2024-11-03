@@ -1,6 +1,8 @@
 import { describe, it } from "node:test";
-import { join, normalizeSlashes } from "./paths.js";
 import * as assert from "node:assert";
+
+import { join, normalizeSlashes } from "../../src/utils/paths.js";
+
 
 describe("joinPaths", () => {
   it("relative paths", () => {

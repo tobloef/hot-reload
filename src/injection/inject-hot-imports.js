@@ -5,9 +5,9 @@ import { join } from "../utils/paths.js";
  * @param {string} originalCode
  * @param {string} modulePath
  * @param {string} [rootPath]
- * @return {Promise<string>}
+ * @return {string}
  */
-export async function injectHotImports(originalCode, modulePath, rootPath) {
+export function injectHotImports(originalCode, modulePath, rootPath) {
   if (rootPath === undefined) {
     rootPath = ".";
   }
