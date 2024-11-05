@@ -18,6 +18,7 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
 
   let lets = [];
   let subscribes = [];
+  let promises = [];
   let initialAssigns = new Set();
 
   for (const importInfo of imports) {
@@ -46,7 +47,10 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
     assign += property;
     assign += ";";
 
-    initialAssigns.add(`${importName} = (await hmr.getModule("${importPath}"))${property};`);
+    const promise = `hmr.getModule("${importPath}")`;
+    promises.push(promise);
+
+    initialAssigns.add(`${importName} = (await ${promise})${property};`);
 
     const subscribe = (
       `hmr.onReload("${importPath}", "${canonicalPath}"${attributesStr}, (newModule) => {\n` +
@@ -69,6 +73,7 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
     "await (async () => {\n" +
     `\tconst { HotModuleReload } = await import("@tobloef/hot-reload");\n\n` +
     `\tconst hmr = new HotModuleReload(import.meta.url);\n\n` +
+    `${promises.map((p) => `\t${p}`).join("\n")}\n\n` +
     `${subscribes.map((s) => `\t${s}`).join("\n")}` +
     (subscribes.length > 0 ? "\n\n" : "") +
     `${Array.from(initialAssigns).map((t) => `\t${t}`).join("\n")}` +
