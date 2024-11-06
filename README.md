@@ -2,7 +2,7 @@
 
 Utilities for hot reloading ([what is hot reloading?](#what-is-hot-reloading)) JavaScript modules and other assets on the web.
 
-Used as part of my [build tool](https://github.com/tobloef/build-tool).
+See this in action in my [build tool](https://github.com/tobloef/build-tool).
 
 > [!WARNING]
 > This project was created primarily for personal use. For this reason, it is not fully documented and I would not recommend using it. That said, I hope it can at least be inspirational for your own projects.
@@ -132,4 +132,4 @@ You can also have "live reloading", where you restart the whole program (or refr
 
 Live reloading is a simpler strategy, easier to implement and with fewer things that can go wrong.
 Hot reloading has the advantage of minimizing the amount of lost state to the specific part that was changed.
-For example, when developing a video game, you might update a 3D model or a function to calculate health points, while still the player's position, score, etc.
+For example, when developing a video game, you might update a 3D model or a function to calculate health points, while still keeping the player's position, score, etc.
