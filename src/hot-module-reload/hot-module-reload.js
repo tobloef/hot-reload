@@ -5,7 +5,7 @@ import { ModuleCache } from "./module-cache.js";
 
 /** @typedef {Object} Module */
 /** @typedef {Record<string, string>} Attributes */
-/** @typedef {(newModule: Module) => Promise<void>} HotModuleReloadCallback */
+/** @typedef {(newModule: Module) => Promise<boolean>} HotModuleReloadCallback */
 
 const defaultCache = new ModuleCache();
 
@@ -70,8 +70,10 @@ export class HotModuleReload {
       return callback?.(newModule);
     };
 
+    /** @type {Callback} */
     const bustCache = async () => {
       this.#moduleCache.remove(absoluteUrl);
+      return undefined;
     }
 
     this.#hotReload.onPreReload(canonicalPath, bustCache);

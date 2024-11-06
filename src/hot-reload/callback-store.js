@@ -1,4 +1,4 @@
-/** @typedef {() => Promise<void>} Callback */
+/** @typedef {() => Promise<boolean | undefined>} Callback */
 
 export class CallbackStore {
   /**
@@ -43,8 +43,6 @@ export class CallbackStore {
 
     const results = await Promise.all(callbacks.map((cb) => cb()));
 
-    const wasAccepted = results.every((result) => result);
-
-    return wasAccepted;
+    return results.every((result) => result);
   }
 }
