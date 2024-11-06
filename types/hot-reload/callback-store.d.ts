@@ -1,4 +1,4 @@
-/** @typedef {() => Promise<void>} Callback */
+/** @typedef {() => Promise<boolean | undefined>} Callback */
 export class CallbackStore {
     /**
      * @param {string} key
@@ -17,4 +17,4 @@ export class CallbackStore {
     trigger(key: string): Promise<boolean>;
     #private;
 }
-export type Callback = () => Promise<void>;
+export type Callback = () => Promise<boolean | undefined>;

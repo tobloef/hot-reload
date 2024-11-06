@@ -38,6 +38,6 @@ export class HotModuleReload {
 }
 export type Module = Object;
 export type Attributes = Record<string, string>;
-export type HotModuleReloadCallback = (newModule: Module) => Promise<void>;
+export type HotModuleReloadCallback = (newModule: Module) => Promise<boolean>;
 import { ModuleCache } from "./module-cache.js";
 import { HotReload } from "../hot-reload/hot-reload.js";
