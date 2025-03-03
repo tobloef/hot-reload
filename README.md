@@ -10,7 +10,7 @@ See this in action in my [build tool](https://github.com/tobloef/build-tool).
 ## Installation
 
 ```
-npm install --save @tobloef/hot-reload
+npm install --save "git+https://git@github.com/tobloef/hot-reload.git#v1.2.5"
 ```
 
 ## Usage
