@@ -16,9 +16,9 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
 
   let remainingCode = commentOutImports(originalCode);
 
-  let lets = [];
-  let subscribes = [];
-  let promises = [];
+  let lets = new Set();
+  let subscribes = new Set();
+  let promises = new Set();
   let initialAssigns = new Set();
 
   for (const importInfo of imports) {
@@ -38,7 +38,7 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
       continue;
     }
 
-    lets.push(`let ${importName};`);
+    lets.add(`let ${importName};`);
 
     const attributesStr = attributes ? `, ${attributes}` : "";
 
@@ -48,7 +48,7 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
     assign += ";";
 
     const promise = `hmr.getModule("${importPath}")`;
-    promises.push(promise);
+    promises.add(promise);
 
     initialAssigns.add(`${importName} = (await ${promise})${property};`);
 
@@ -58,24 +58,24 @@ export function injectHotImports(originalCode, modulePath, rootPath) {
       `\treturn true;\n` +
       `});`
     );
-    subscribes.push(subscribe);
+    subscribes.add(subscribe);
   }
 
-  if (lets.length === 0) {
+  if (lets.size === 0) {
     return originalCode;
   }
 
   let addedCode = "////////// START OF INJECTED HOT-RELOAD CODE //////////\n\n";
 
   addedCode += (
-    `${lets.join("\n")}` +
-    (lets.length > 0 ? "\n\n" : "") +
+    `${[...lets].join("\n")}` +
+    (lets.size > 0 ? "\n\n" : "") +
     "await (async () => {\n" +
     `\tconst { HotModuleReload } = await import("@tobloef/hot-reload");\n\n` +
     `\tconst hmr = new HotModuleReload(import.meta.url);\n\n` +
-    `${promises.map((p) => `\t${p}`).join("\n")}\n\n` +
-    `${subscribes.map((s) => `\t${s}`).join("\n")}` +
-    (subscribes.length > 0 ? "\n\n" : "") +
+    `${[...promises].map((p) => `\t${p}`).join("\n")}\n\n` +
+    `${[...subscribes].map((s) => `\t${s}`).join("\n")}` +
+    (subscribes.size > 0 ? "\n\n" : "") +
     `${Array.from(initialAssigns).map((t) => `\t${t}`).join("\n")}` +
     (initialAssigns.size > 0 ? "\n" : "") +
     "})();"
